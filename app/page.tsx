@@ -1,5 +1,7 @@
+import LoginBox from "@/components/LoginBox";
+
 export default function Home() {
   return (
-    <div>hello</div>
+    <LoginBox />
   );
 }
