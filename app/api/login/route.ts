@@ -1,30 +1,38 @@
 import { NextResponse } from "next/server";
+import { db } from "@/lib/db";
+import bcrypt from "bcryptjs";
+
+interface DbUser {
+  id: number;
+  email: string;
+  password_hash: string;
+  created_at: string;
+}
 
 export async function POST(req: Request) {
-    try {
-        const body = await req.json();
-        const { email, password } = body;
+  const { email, password } = await req.json();
 
-        // Mock user
-        const mockUser = {
-            email: "test@test.com",
-            password: "123456",
-        };
+  const stmt = db.prepare(
+    "SELECT id, email, password_hash, created_at FROM users WHERE email = ?"
+  );
 
-        // Sprawdzenie danych
-        if (email !== mockUser.email || password !== mockUser.password) {
-            return NextResponse.json(
-                { success: false, error: "Nieprawidłowy email lub hasło" },
-                { status: 401 }
-            );
-        }
+  const user = stmt.get(email) as DbUser | undefined;
 
-        return NextResponse.json({ success: true });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-        return NextResponse.json(
-            { success: false, error: "Błąd serwera" },
-            { status: 500 }
-        );
-    }
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: "Nieprawidłowy email lub hasło" },
+      { status: 401 }
+    );
+  }
+
+  const isValid = bcrypt.compareSync(password, user.password_hash);
+
+  if (!isValid) {
+    return NextResponse.json(
+      { success: false, error: "Nieprawidłowy email lub hasło" },
+      { status: 401 }
+    );
+  }
+
+  return NextResponse.json({ success: true });
 }
