@@ -6,9 +6,13 @@ export default function LoginBox() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [success, setSuccess] = useState(false);
 
   const validateEmail = (value: string) => {
     if (!value.includes("@") || !value.includes(".")) {
@@ -26,14 +30,37 @@ export default function LoginBox() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage(""); 
+    setSuccess(false);
 
-    // Jeśli błędy → nie wysyłamy
     if (emailError || passwordError) return;
 
-    console.log("Email:", email);
-    console.log("Password:", password);
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setErrorMessage(data.error || "Błąd logowania");
+      } else {
+        setSuccess(true);
+      }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
+      setErrorMessage("Błąd połączenia z serwerem");
+    }
+
+    setLoading(false);
   };
 
   const isDisabled =
@@ -42,6 +69,18 @@ export default function LoginBox() {
   return (
     <div className="max-w-sm mx-auto mt-12 p-6 border rounded-lg shadow">
       <h2 className="text-xl font-semibold mb-4">Logowanie</h2>
+
+      {success && (
+        <p className="mb-3 p-2 bg-green-100 text-green-800 rounded">
+          ✔️ Zalogowano pomyślnie!
+        </p>
+      )}
+
+      {errorMessage && (
+        <p className="mb-3 p-2 bg-red-100 text-red-800 rounded">
+          {errorMessage}
+        </p>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Email */}
@@ -91,14 +130,14 @@ export default function LoginBox() {
 
         <button
           type="submit"
-          disabled={isDisabled}
+          disabled={isDisabled || loading}
           className={`w-full py-2 rounded text-white ${
-            isDisabled
+            isDisabled || loading
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-blue-600 hover:bg-blue-700"
           }`}
         >
-          Zaloguj
+          {loading ? "Logowanie..." : "Zaloguj"}
         </button>
       </form>
     </div>
