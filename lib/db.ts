@@ -24,3 +24,13 @@ db.exec(`
     FOREIGN KEY (user_id) REFERENCES users(id)
   );
 `);
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS password_resets (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    token TEXT UNIQUE,
+    expires_at TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  );
+`);
