@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function ResetPage() {
   const [email, setEmail] = useState("");
@@ -29,7 +30,7 @@ export default function ResetPage() {
 
   return (
     <main className="min-h-screen flex justify-center items-center p-4">
-      <div className="w-full max-w-md p-6 bg-white shadow rounded">
+      <div className="w-full max-w-md p-6 bg-white shadow rounded text-center">
         <h1 className="text-2xl font-bold mb-4">Resetowanie hasła</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -58,14 +59,17 @@ export default function ResetPage() {
             <br />
             <strong>{sentToken}</strong>
             <br />
-            <a
-              className="text-blue-600 underline"
-              href={`/reset/${sentToken}`}
-            >
+            <a className="text-blue-600 underline" href={`/reset/${sentToken}`}>
               Kliknij, aby ustawić nowe hasło →
             </a>
           </div>
         )}
+        <Link
+          href="/"
+          className="text-blue-600 hover:underline text-sm inline-block mt-4"
+        >
+          ← Powrót do logowania
+        </Link>
       </div>
     </main>
   );
