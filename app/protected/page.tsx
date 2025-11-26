@@ -33,13 +33,25 @@ export default async function ProtectedPage() {
 
   return (
     <main className="min-h-screen p-8 text-center">
-      <h1 className="text-3xl font-bold text-red-600">Witaj w strefie chronionej</h1>
+      <h1 className="text-3xl font-bold mb-4">Strefa chroniona</h1>
+      <p className="text-lg mb-4">Jesteś poprawnie zalogowany 🎉</p>
+
+      
       <Link
         href="/"
         className="text-blue-600 hover:underline text-sm inline-block mt-4"
       >
         ← Powrót do logowania
       </Link>
+
+      <form action="/api/logout" method="POST">
+        <button
+          type="submit"
+          className="mt-6 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+        >
+          Wyloguj
+        </button>
+      </form>
     </main>
   );
 }

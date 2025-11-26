@@ -8,10 +8,14 @@ export default function UsersPage() {
     "use server";
 
     const id = Number(formData.get("id"));
-    const stmt = db.prepare("DELETE FROM users WHERE id = ?");
-    stmt.run(id);
-
-    revalidatePath("/users")
+    
+    const deleteSessions = db.prepare("DELETE FROM sessions WHERE user_id = ?");
+    deleteSessions.run(id);
+    
+    const deleteUser = db.prepare("DELETE FROM users WHERE id = ?");
+    deleteUser.run(id);
+    
+    revalidatePath("/users");
   }
 
   // ---- SELECT ALL USERS ----
@@ -44,7 +48,9 @@ export default function UsersPage() {
             <tr>
               <th className="px-4 py-2 text-left font-medium">ID</th>
               <th className="px-4 py-2 text-left font-medium">Email</th>
-              <th className="px-4 py-2 text-left font-medium">Data utworzenia</th>
+              <th className="px-4 py-2 text-left font-medium">
+                Data utworzenia
+              </th>
               <th className="px-4 py-2 text-left font-medium">Usuń</th>
             </tr>
           </thead>
@@ -52,10 +58,7 @@ export default function UsersPage() {
           <tbody>
             {users.length === 0 && (
               <tr>
-                <td
-                  colSpan={4}
-                  className="px-4 py-4 text-center text-gray-500"
-                >
+                <td colSpan={4} className="px-4 py-4 text-center text-gray-500">
                   Brak użytkowników.
                 </td>
               </tr>
