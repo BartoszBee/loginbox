@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function LoginBox() {
   const [email, setEmail] = useState("");
@@ -14,6 +15,8 @@ export default function LoginBox() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [success, setSuccess] = useState(false);
+
+  const router = useRouter();
 
   // ------- Walidacja -------
   const validateEmail = (value: string) => {
@@ -55,6 +58,7 @@ export default function LoginBox() {
         setErrorMessage(data.error || "Błąd logowania");
       } else {
         setSuccess(true);
+        router.push("/protected");
       }
     } catch {
       setErrorMessage("Błąd połączenia z serwerem");

@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const session = req.cookies.get("session")?.value;
 
-  const protectedPaths = ["/protected", "/users"];
+  // Ścieżki wymagające logowania
+  const protectedPaths = ["/protected"];
 
   if (protectedPaths.some((p) => req.nextUrl.pathname.startsWith(p))) {
     if (!session) {
@@ -16,5 +17,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/protected/:path*", "/users/:path*"],
+  matcher: ["/protected/:path*"],
 };
