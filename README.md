@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🔐 Next.js Auth + SQLite (local only)
 
-## Getting Started
+To jest prosta aplikacja demonstracyjna prezentująca, jak zbudować **system logowania, rejestracji i resetu hasła** w Next.js 14/15 z wykorzystaniem **SQLite** działającego lokalnie.
 
-First, run the development server:
+Projekt został stworzony jako materiał szkoleniowy.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Funkcje aplikacji
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### ✔ Logowanie i rejestracja użytkowników
+- hasła są bezpiecznie hashowane (`bcryptjs`)
+- walidacja po stronie klienta i serwera
+- po zalogowaniu tworzona jest **sesja httpOnly** zapisana w SQLite
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### ✔ Sesje httpOnly + ochrona stron
+- cookie `session` jest:
+  - httpOnly
+  - SameSite=Lax
+  - Path=/
+- zapisane sesje znajdują się w tabeli `sessions`
+- strony takie jak `/protected` działają tylko po wykryciu aktywnej sesji
 
-## Learn More
+### ✔ Resetowanie hasła
+- generowanie jednorazowego tokenu
+- zapis w tabeli `password_resets`
+- formularz ustawiania nowego hasła
+- po użyciu token jest kasowany
 
-To learn more about Next.js, take a look at the following resources:
+### ✔ Lista użytkowników `/users`
+- widok wszystkich kont w systemie
+- możliwość usuwania użytkowników
+- usuwanie działa wraz z czyszczeniem sesji powiązanych z użytkownikiem
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### ✔ Wylogowanie
+- usuwa cookie `session`
+- usuwa rekord sesji z bazy
+- automatyczny redirect na stronę główną (`/`)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## ⚠️ Ważne — SQLite działa **tylko lokalnie**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
