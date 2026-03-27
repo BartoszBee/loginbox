@@ -1,37 +1,48 @@
 import Link from "next/link";
 import LoginBox from "@/components/LoginBox";
 
-export default function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ info?: string }>;
+}) {
+  const { info } = await searchParams;
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-50">
-      <h1 className="text-3xl font-bold mb-3">Witaj w aplikacji</h1>
-      <p className="text-red-600 mb-2">(Zastosowano SQLite - działanie lokalne)</p>
+      <div className="w-full max-w-sm">
 
-      <div className="w-full max-w-sm text-center">
+        {/* Nagłówek */}
+        <div className="text-center mb-6">
+          <h1 className="text-3xl font-bold text-gray-800">LoginBox</h1>
+          <p className="text-sm text-gray-400 mt-1">demo · Next.js + SQLite</p>
+        </div>
+
+        {/* Komunikat przy przekierowaniu z chronionej strony */}
+        {info === "login" && (
+          <p className="text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 mb-4 text-sm text-center">
+            Musisz się zalogować, aby przejść do tej strony.
+          </p>
+        )}
+
+        {/* Box logowania */}
         <LoginBox />
 
-        <p className="text-center mt-4 text-sm">
-          Nie masz konta?{" "}
+        {/* Linki nawigacyjne */}
+        <div className="mt-6 border-t border-gray-200 pt-4 flex flex-col gap-2 text-sm text-center">
           <Link
-            href="/register"
-            className="text-blue-600 hover:underline font-medium"
+            href="/protected"
+            className="text-gray-500 hover:text-gray-800 hover:underline transition-colors"
           >
-            Zarejestruj się
+            Strona chroniona →
           </Link>
-        </p>
-        <p className="text-3xl font-bold mt-3">⁘</p>
-        <Link
-          href="/users"
-          className="text-blue-600 hover:underline mx-auto inline-block  mt-4"
-        >
-          Lista użytkowników →
-        </Link>
-        <Link
-          href="/protected"
-          className="text-red-600 hover:underline mx-auto inline-block  mb-3 "
-        >
-          Strona tylko dla zalogowanych użytkowników →
-        </Link>
+          <Link
+            href="/users"
+            className="text-gray-500 hover:text-gray-800 hover:underline transition-colors"
+          >
+            Lista użytkowników →
+          </Link>
+        </div>
+
       </div>
     </main>
   );

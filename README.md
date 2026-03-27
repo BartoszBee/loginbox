@@ -1,44 +1,24 @@
-# 🔐 Next.js Auth + SQLite (local only)
+# LoginBox
 
-To jest prosta aplikacja demonstracyjna prezentująca, jak zbudować **system logowania, rejestracji i resetu hasła** w Next.js 14/15 z wykorzystaniem **SQLite** działającego lokalnie.
+Demo aplikacji pokazujące jak zbudować system logowania od zera w Next.js 16 — bez NextAuth, Clerk ani żadnej innej gotowej biblioteki auth. Chodziło o to, żeby zobaczyć co tak naprawdę dzieje się pod spodem.
 
-Projekt został stworzony jako materiał szkoleniowy.
+## Co tu jest
 
----
+Pełny flow: rejestracja, logowanie, sesje, reset hasła, wylogowanie. Hasła hashowane bcryptem, sesja trzymana w HttpOnly cookie, ochrona stron przez middleware.
 
-## 🚀 Funkcje aplikacji
+Stack: Next.js 16 (App Router), React 19, SQLite, TypeScript, Tailwind CSS 4.
 
-### ✔ Logowanie i rejestracja użytkowników
-- hasła są bezpiecznie hashowane (`bcryptjs`)
-- walidacja po stronie klienta i serwera
-- po zalogowaniu tworzona jest **sesja httpOnly** zapisana w SQLite
+## Uruchomienie
 
-### ✔ Sesje httpOnly + ochrona stron
-- cookie `session` jest:
-  - httpOnly
-  - SameSite=Lax
-  - Path=/
-- zapisane sesje znajdują się w tabeli `sessions`
-- strony takie jak `/protected` działają tylko po wykryciu aktywnej sesji
+```bash
+npm install
+npm run dev
+```
 
-### ✔ Resetowanie hasła
-- generowanie jednorazowego tokenu
-- zapis w tabeli `password_resets`
-- formularz ustawiania nowego hasła
-- po użyciu token jest kasowany
+Baza danych tworzy się automatycznie przy pierwszym uruchomieniu, nie trzeba nic konfigurować.
 
-### ✔ Lista użytkowników `/users`
-- widok wszystkich kont w systemie
-- możliwość usuwania użytkowników
-- usuwanie działa wraz z czyszczeniem sesji powiązanych z użytkownikiem
+## Kilka rzeczy wartych uwagi
 
-### ✔ Wylogowanie
-- usuwa cookie `session`
-- usuwa rekord sesji z bazy
-- automatyczny redirect na stronę główną (`/`)
+Reset hasła w normalnej aplikacji wysyłałby token emailem — tutaj token pojawia się na ekranie, żeby nie dokładać zależności od zewnętrznego serwisu. Podobnie z rate limitingiem i pełną ochroną CSRF — świadomie pominięte, żeby nie zaciemniać głównego tematu.
 
----
-
-## ⚠️ Ważne — SQLite działa **tylko lokalnie**
-
-
+SQLite działa lokalnie bez żadnej konfiguracji, ale do produkcyjnego deploymentu trzeba by wymienić na Postgres.

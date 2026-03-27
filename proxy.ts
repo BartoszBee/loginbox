@@ -9,7 +9,7 @@ export function proxy(req: NextRequest) {
 
   if (protectedPaths.some((p) => req.nextUrl.pathname.startsWith(p))) {
     if (!session) {
-      return NextResponse.redirect(new URL("/", req.url));
+      return NextResponse.redirect(new URL("/?info=login", req.url));
     }
   }
 

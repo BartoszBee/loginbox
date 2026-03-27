@@ -16,8 +16,8 @@ export async function POST(req: Request) {
 
   const token = crypto.randomUUID();
 
-  // Token ważny 200 minut
-  const expiresAt = new Date(Date.now() + 20 * 60 * 10000)
+  // Token ważny 20 minut
+  const expiresAt = new Date(Date.now() + 20 * 60 * 1000)
     .toISOString()
     .slice(0, 19)
     .replace("T", " ");
