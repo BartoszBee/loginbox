@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
     // sprawdzamy wygaśnięcie tokenu
     const now = new Date();
-    const expiresAt = new Date(reset.expires_at);
+    const expiresAt = new Date(reset.expires_at.replace(" ", "T") + "Z");
 
     if (now > expiresAt) {
         return NextResponse.json(
