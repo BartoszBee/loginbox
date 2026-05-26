@@ -4,8 +4,22 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
   const { email, password } = await req.json();
-  
-  const hashed = bcrypt.hashSync(password, 10);
+
+  if (!email || !email.includes("@") || !email.includes(".")) {
+    return NextResponse.json(
+      { success: false, error: "Nieprawidłowy adres email" },
+      { status: 400 }
+    );
+  }
+
+  if (!password || password.length < 6) {
+    return NextResponse.json(
+      { success: false, error: "Hasło musi mieć co najmniej 6 znaków" },
+      { status: 400 }
+    );
+  }
+
+  const hashed = await bcrypt.hash(password, 10);
 
   try {
     const stmt = db.prepare(

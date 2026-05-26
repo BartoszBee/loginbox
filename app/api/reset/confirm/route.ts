@@ -34,7 +34,7 @@ export async function POST(req: Request) {
         );
     }
 
-    const hashed = bcrypt.hashSync(password, 10);
+    const hashed = await bcrypt.hash(password, 10);
 
     // zmiana hasła
     db.prepare("UPDATE users SET password_hash = ? WHERE id = ?").run(

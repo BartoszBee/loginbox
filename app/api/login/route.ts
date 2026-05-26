@@ -13,6 +13,13 @@ interface DbUser {
 export async function POST(req: Request) {
   const { email, password } = await req.json();
 
+  if (!email || !password) {
+    return NextResponse.json(
+      { success: false, error: "Nieprawidłowy email lub hasło" },
+      { status: 401 }
+    );
+  }
+
   const stmt = db.prepare(
     "SELECT id, email, password_hash, created_at FROM users WHERE email = ?"
   );
@@ -26,7 +33,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const isValid = bcrypt.compareSync(password, user.password_hash);
+  const isValid = await bcrypt.compare(password, user.password_hash);
 
   if (!isValid) {
     return NextResponse.json(

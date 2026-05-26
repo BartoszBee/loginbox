@@ -17,10 +17,23 @@ export default async function ProtectedPage() {
     );
   }
 
-  const stmt = db.prepare("SELECT user_id FROM sessions WHERE session_id = ?");
-  const session = stmt.get(sessionCookie.value);
+  const stmt = db.prepare("SELECT user_id, expires_at FROM sessions WHERE session_id = ?");
+  const session = stmt.get(sessionCookie.value) as { user_id: number; expires_at: string } | undefined;
 
   if (!session) {
+    return (
+      <div className="p-8 text-center">
+        <h1 className="text-2xl font-bold">Sesja wygasła</h1>
+        <Link href="/" className="text-blue-600 underline">
+          Zaloguj się ponownie
+        </Link>
+      </div>
+    );
+  }
+
+  const expiresAt = new Date(session.expires_at.replace(" ", "T") + "Z");
+  if (new Date() > expiresAt) {
+    db.prepare("DELETE FROM sessions WHERE session_id = ?").run(sessionCookie.value);
     return (
       <div className="p-8 text-center">
         <h1 className="text-2xl font-bold">Sesja wygasła</h1>

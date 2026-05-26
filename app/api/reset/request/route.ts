@@ -8,10 +8,7 @@ export async function POST(req: Request) {
   const user = db.prepare("SELECT id FROM users WHERE email = ?").get(email) as {id:number};
 
   if (!user) {
-    return NextResponse.json(
-      { error: "Użytkownik nie istnieje" },
-      { status: 404 }
-    );
+    return NextResponse.json({ success: true });
   }
 
   const token = crypto.randomUUID();
